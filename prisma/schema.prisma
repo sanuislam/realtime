@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,21 +8,69 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid()) @map("_id")
-  name         String
-  email        String   @unique
-  passwordHash String // hashed password (e.g. bcrypt)
-  avatar       String? // profile picture URL
-  role         UserRole @default(READER)
-  isVerified   Boolean  @default(false)
-  
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id            String  @id @default(uuid()) @map("_id")
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+
+  createdAt DateTime
+  updatedAt DateTime
+
+  sessions Session[]
+  accounts Account[]
+
+  @@unique([email])
+  @@map("users")
 }
 
-enum UserRole {
-  READER
-  CONTRIBUTOR
-  EDITOR
-  ADMIN
+model Session {
+  id        String   @id @default(uuid()) @map("_id")
+  expiresAt DateTime
+  token     String
+
+  createdAt DateTime
+  updatedAt DateTime
+
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("sessions")
+}
+
+model Account {
+  id         String @id @default(uuid()) @map("_id")
+  accountId  String
+  providerId String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+
+  createdAt DateTime
+  updatedAt DateTime
+
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id @default(uuid()) @map("_id")
+  identifier String
+  value      String
+  expiresAt  DateTime
+
+  createdAt DateTime?
+  updatedAt DateTime?
+
+  @@map("verifications")
 }
