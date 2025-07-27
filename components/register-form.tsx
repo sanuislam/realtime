@@ -4,10 +4,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signUp } from "@/lib/auth-client";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { signUpEmailAction } from "@/actions/sign-up-email-action";
 
 const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,44 +15,18 @@ const RegisterForm = () => {
 
   async function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
+    setIsLoading(true);
     const formData = new FormData(evt.target as HTMLFormElement);
 
-    const name = String(formData.get("name"));
-    if (!name) {
-      return toast.error("Please enter your name");
-    }
-    const email = String(formData.get("email"));
-    if (!email) {
-      return toast.error("Please enter your email");
-    }
-    const password = String(formData.get("password"));
+    const { error } = await signUpEmailAction(formData);
 
-    if (!password) {
-      return toast.error("Please enter password");
+    if (error) {
+      toast.error(error);
+      setIsLoading(false);
+    } else {
+      toast.success("Registration Complete. Congratulations!");
+      router.push("/auth/login");
     }
-
-    await signUp.email(
-      {
-        name,
-        email,
-        password,
-      },
-      {
-        onRequest: () => {
-          setIsLoading(true);
-        },
-        onResponse: () => {
-          setIsLoading(false);
-        },
-        onError: (ctx) => {
-          toast.error(ctx.error.message);
-        },
-        onSuccess: () => {
-          toast.success("Registration Complete. Congratulations!");
-          router.push("/profile");
-        },
-      }
-    );
   }
 
   return (

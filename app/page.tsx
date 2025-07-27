@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
-import React from "react";
+"use client";
+import GetStartedButton from "@/components/get-started-button";
 
 const Home = () => {
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <div className="flex flex-col items-center justify-center gap-4">
-        <h1>Welcome Next Js + Socket.io</h1>
-        <Button className="cursor-pointer">Learn More</Button>
+        <h1 className="text-6xl font-black">Welcome Next Js + Better Auth</h1>
+        <GetStartedButton />
       </div>
     </div>
   );

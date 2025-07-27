@@ -4,10 +4,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signIn } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { signInEmailAction } from "@/actions/sign-in-email-action";
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,38 +15,18 @@ const LoginForm = () => {
 
   async function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
+    setIsLoading(true);
     const formData = new FormData(evt.target as HTMLFormElement);
-    const email = String(formData.get("email"));
-    if (!email) {
-      return toast.error("Please enter your email");
-    }
-    const password = String(formData.get("password"));
 
-    if (!password) {
-      return toast.error("Please enter password");
-    }
+    const { error } = await signInEmailAction(formData);
 
-    await signIn.email(
-      {
-        email,
-        password,
-      },
-      {
-        onRequest: () => {
-          setIsLoading(true);
-        },
-        onResponse: () => {
-          setIsLoading(false);
-        },
-        onError: (ctx) => {
-          toast.error(ctx.error.message);
-        },
-        onSuccess: () => {
-          toast.success("Login success. Welcome!");
-          router.push("/");
-        },
-      }
-    );
+    if (error) {
+      toast.error(error);
+      setIsLoading(false);
+    } else {
+      toast.success("Login success. Welcome back!");
+      router.push("/profile");
+    }
   }
 
   return (
