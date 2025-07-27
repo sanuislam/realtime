@@ -1,3 +1,4 @@
+import UsersTable from "@/components/admin/user-table";
 import ReturnButton from "@/components/return-button";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
@@ -30,6 +31,7 @@ const AdminDashbaord = async () => {
 
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
       </div>
+      <UsersTable />
     </div>
   );
 };

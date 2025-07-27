@@ -21,6 +21,9 @@ model User {
   image         String?
   role          UserRole @default(USER)
 
+  balance  Float   @default(0.00)
+  isActive Boolean @default(true)
+
   createdAt DateTime
   updatedAt DateTime
 

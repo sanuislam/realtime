@@ -1,4 +1,4 @@
-import { betterAuth } from "better-auth";
+import { betterAuth, boolean } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { APIError } from "better-auth/api";
@@ -50,6 +50,14 @@ export const auth = betterAuth({
     additionalFields: {
       role: {
         type: ["USER", "AGENT", "ADMIN"],
+        input: false,
+      },
+      isActive: {
+        type: "boolean",
+        input: false,
+      },
+      balance: {
+        type: "number",
         input: false,
       },
     },
