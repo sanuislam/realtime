@@ -5,7 +5,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,29 +14,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User } from "@prisma/client";
+import UserRoleSelect from "../user-role-select";
 
 export const columns: ColumnDef<User>[] = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
+    id: "status",
     enableHiding: false,
+    cell: ({ row }) => {
+      const status = row.original;
+      return (
+        <div
+          className={`h-4 w-4 rounded-full ${
+            status.isActive ? "bg-sky-400" : "bg-red-400"
+          }`}
+        />
+      );
+    },
   },
   {
     accessorKey: "role",
@@ -69,10 +61,23 @@ export const columns: ColumnDef<User>[] = [
     ),
   },
   {
+    accessorKey: "balance",
+    header: () => <div className="text-right">Balance</div>,
+    cell: ({ row }) => {
+      const balance = parseFloat(row.getValue("balance"));
+      // Format the amount as a dollar amount
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "BDT",
+      }).format(balance);
+      return <div className="text-right font-medium">{formatted}</div>;
+    },
+  },
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const user = row.original;
 
       return (
         <DropdownMenu>
@@ -85,13 +90,15 @@ export const columns: ColumnDef<User>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(user.id)}
             >
-              Copy payment ID
+              Copy user ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>View user</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <UserRoleSelect userId={user.id} role={user.role} />
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
