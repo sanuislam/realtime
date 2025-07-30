@@ -4,23 +4,24 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { APIError } from "better-auth/api";
 
-export async function signInEmailAction(formData: FormData) {
-  const email = String(formData.get("email"));
-  if (!email) {
+export async function signInEmailAction(data: {
+  email: string;
+  password: string;
+}) {
+  if (!data.email) {
     return { error: "Please enter your email" };
   }
 
-  const password = String(formData.get("password"));
-  if (!password) {
+  if (!data.password) {
     return { error: "Please enter password" };
   }
 
   try {
-     await auth.api.signInEmail({
+    await auth.api.signInEmail({
       headers: await headers(),
       body: {
-        email,
-        password,
+        email: data.email,
+        password: data.password,
       },
     });
 
