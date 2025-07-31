@@ -47,7 +47,7 @@ const LoginForm = () => {
       setIsLoading(false);
     } else {
       toast.success("Login success. Welcome back!");
-      router.push("/");
+      router.push("/bd");
     }
   };
 

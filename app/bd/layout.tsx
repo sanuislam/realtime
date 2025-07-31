@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
+import "../globals.css";
 import NavBar from "@/components/header/nav-bar";
 
 const geistSans = Geist({
@@ -19,19 +18,17 @@ export const metadata: Metadata = {
   description: "socket.io",
 };
 
-export default function RootLayout({
+export default function SiteLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
+      <div
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <NavBar />
         {children}
-        <Toaster position="top-center" richColors />
-      </body>
-    </html>
+      </div>
   );
 }

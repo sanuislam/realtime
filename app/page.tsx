@@ -1,15 +1,17 @@
 "use client";
-import GetStartedButton from "@/components/get-started-button";
+import { redirect } from "next/navigation";
+import React, { useEffect } from "react";
 
-const Home = () => {
+const Redirect = () => {
   return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <div className="flex flex-col items-center justify-center gap-4">
-        <h1 className="text-6xl font-black">Welcome Next Js + Better Auth</h1>
-        <GetStartedButton />
-      </div>
-    </div>
+    useEffect(() => {
+      redirect("/bd") // Redirect to the desired path
+    }, []),
+    (
+      // This component will redirect to /bd when mounted
+      <div>Redirect</div>
+    )
   );
 };
 
-export default Home;
+export default Redirect;

@@ -3,28 +3,29 @@
 import { auth, ErrorCode } from "@/lib/auth";
 import { APIError } from "better-auth/api";
 
-export async function signUpEmailAction(formData: FormData) {
-  const name = String(formData.get("name"));
-  if (!name) {
+export async function signUpEmailAction(data: {
+  name: string;
+  email: string;
+  password: string;
+}) {
+  if (!data.name) {
     return { error: "Please enter your name" };
   }
 
-  const email = String(formData.get("email"));
-  if (!email) {
+  if (!data.email) {
     return { error: "Please enter your email" };
   }
 
-  const password = String(formData.get("password"));
-  if (!password) {
+  if (!data.password) {
     return { error: "Please enter password" };
   }
 
   try {
     await auth.api.signUpEmail({
       body: {
-        name,
-        email,
-        password,
+        name:data.name,
+        email:data.email,
+        password:data.password,
       },
     });
     return { error: null };

@@ -10,7 +10,7 @@ import { User2 } from "lucide-react";
 
 const NavBar = () => {
   const { data: session, isPending } = useSession();
-
+  
   const href = session ? "/profile" : "/auth/login";
 
   return (
